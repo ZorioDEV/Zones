@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace ProjectZones
+namespace ProjectZones.Core
 {
     public class Game1 : Game
     {
