@@ -1,3 +1,3 @@
 ﻿
-using var game = new ProjectZones.Game1();
+using var game = new ProjectZones.Core.Game1();
 game.Run();
