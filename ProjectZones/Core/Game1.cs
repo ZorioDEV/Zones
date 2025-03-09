@@ -4,7 +4,10 @@ using Microsoft.Xna.Framework.Input;
 using ProjectZones.Collision;
 using ProjectZones.Entities;
 using ProjectZones.Utilities;
+using ProjectZones.World;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ProjectZones.Core
 {
@@ -25,6 +28,16 @@ namespace ProjectZones.Core
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            // Set fullscreen
+            _graphics.IsFullScreen = true;
+
+            // Set the preferred backbuffer width and height to the screen's resolution
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+            // Apply changes
+            _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
@@ -59,6 +72,13 @@ namespace ProjectZones.Core
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Toggle fullscreen on F11 key press
+            if (Keyboard.GetState().IsKeyDown(Keys.F11))
+            {
+                _graphics.ToggleFullScreen();
+                _graphics.ApplyChanges();
+            }
+
             InputManager.Update(gameTime);
 
             // Update entities
@@ -71,9 +91,9 @@ namespace ProjectZones.Core
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.Identity);
 
             // Draw entities
             _player.Draw(_spriteBatch);

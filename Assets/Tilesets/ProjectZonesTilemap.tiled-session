@@ -1,0 +1,52 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Collision.tsx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "Collision.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "Overworld.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "TestTilemap.tmx": {
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 244.5,
+                "y": 120.25
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/Users/tjbye/OneDrive/Documents/GitHub/Zones/Assets/Tilesets/CSVs",
+    "last.imagePath": "C:/Users/tjbye/OneDrive/Documents/GitHub/Zones/Assets/kenney_rpg-urban-pack/Tilemap",
+    "map.height": 100,
+    "map.lastUsedExportFilter": "CSV files (*.csv)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 100,
+    "openFiles": [
+        "TestTilemap.tmx",
+        "Collision.tsx",
+        "Overworld.tsx"
+    ],
+    "project": "ProjectZonesTilemap.tiled-project",
+    "recentFiles": [
+        "TestTilemap.tmx",
+        "Overworld.tsx",
+        "Collision.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
