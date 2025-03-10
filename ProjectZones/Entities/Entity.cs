@@ -13,7 +13,7 @@ namespace ProjectZones.Entities
     public abstract class Entity
     {
         // Common properties for all entities
-        public Rectangle Bounds { get; protected set; }
+        public Rectangle Bounds { get; set; }
         protected float MoveSpeed { get; set; } = 150f;
         protected float ReducedMoveSpeed { get; set; } = 100f;
 

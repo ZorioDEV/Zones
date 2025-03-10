@@ -24,6 +24,8 @@ namespace ProjectZones.Core
         private Triangle _triangle1;
         private Triangle _triangle2;
 
+        private ColliderManager _colliderManager;
+
         private KeyboardState _previousKeyboardState;
         private KeyboardState currentKeyboardState;
         private MouseState _previousMouseState;
@@ -75,6 +77,9 @@ namespace ProjectZones.Core
             // Initialize the viewport helper
             _viewportHelper = new ViewportHelper(_graphics);
 
+            // Initialize the collider manager
+            _colliderManager = new ColliderManager(GraphicsDevice.Viewport, 10); // Spawn 10 collide
+
             base.Initialize();
         }
 
@@ -117,8 +122,8 @@ namespace ProjectZones.Core
             // Update entities
             _player.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
 
-            // Update entities
-            _player.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
+            // Update collider manager
+            _colliderManager.Update(_player);
 
             // Update NPCs
             foreach (var npc in _npcs)
@@ -197,6 +202,9 @@ namespace ProjectZones.Core
 
             // Draw the quadrilateral collider outline
             DrawingHelper.DrawQuadrilateralOutline(_spriteBatch, _quadrilateralCollider, Color.Green);
+
+            // Draw colliders
+            _colliderManager.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
