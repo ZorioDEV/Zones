@@ -18,14 +18,18 @@ namespace ProjectZones.Core
         private ViewportHelper _viewportHelper;
 
         private Player _player;
-        private NPC _npc;
-        private Enemy _enemy;
+        private List<NPC> _npcs;
+        private List<Enemy> _enemies;
         private Quadrilateral _quadrilateralCollider;
         private Triangle _triangle1;
         private Triangle _triangle2;
 
         private KeyboardState _previousKeyboardState;
         private KeyboardState currentKeyboardState;
+        private MouseState _previousMouseState;
+        private MouseState _currentMouseState;
+
+        private Random _random = new Random();
 
         // TUTORIAL 
         private Texture2D tilemapAsset;
@@ -51,8 +55,10 @@ namespace ProjectZones.Core
         protected override void Initialize()
         {
             _player = new Player(new Rectangle(100, 100, 25, 25));
-            _npc = new NPC(new Rectangle(400, 100, 25, 25));
-            _enemy = new Enemy(new Rectangle(700, 100, 25, 25));
+
+            // Initialize lists
+            _npcs = NPC.RandomSpawnNPCs(5, _random, GraphicsDevice.Viewport); // Spawn 5 NPCs
+            _enemies = Enemy.RandomSpawnEnemies(5, _random, GraphicsDevice.Viewport); // Spawn 5 Enemies
 
             // Define the quadrilateral collider
             _quadrilateralCollider = new Quadrilateral(
@@ -86,8 +92,14 @@ namespace ProjectZones.Core
 
         protected override void Update(GameTime gameTime)
         {
-            // Get the current keyboard state
-            KeyboardState currentKeyboardState = Keyboard.GetState();
+            // Update the previous keyboard and mouse states at the beginning of the Update method
+            _previousKeyboardState = currentKeyboardState;
+            _previousMouseState = _currentMouseState;
+
+            // Get the current keyboard and mouse states
+            currentKeyboardState = Keyboard.GetState();
+            _currentMouseState = Mouse.GetState();
+
 
             if (currentKeyboardState.IsKeyDown(Keys.Escape))
                 Exit();
@@ -100,15 +112,35 @@ namespace ProjectZones.Core
                 _viewportHelper.Update(_graphics.GraphicsDevice, _graphics.IsFullScreen); // Update viewport helper
             }
 
-            // Update the previous keyboard state
-            _previousKeyboardState = currentKeyboardState;
-
             InputManager.Update(gameTime);
 
             // Update entities
             _player.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
-            _npc.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
-            _enemy.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
+
+            // Update entities
+            _player.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
+
+            // Update NPCs
+            foreach (var npc in _npcs)
+            {
+                npc.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
+                npc.CheckCollisionWithPlayer(_player, currentKeyboardState, _previousKeyboardState);
+            }
+
+            // Update Enemies
+            for (int i = _enemies.Count - 1; i >= 0; i--)
+            {
+                var enemy = _enemies[i];
+                enemy.Update(gameTime, _quadrilateralCollider, _triangle1, _triangle2);
+                enemy.CheckCollisionWithPlayer(_player);
+                enemy.CheckForRemoval(_player, _currentMouseState);
+
+                // Remove enemy if it's no longer alive
+                if (!enemy.IsAlive)
+                {
+                    _enemies.RemoveAt(i);
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -146,8 +178,18 @@ namespace ProjectZones.Core
 
             // Draw entities
             _player.Draw(_spriteBatch);
-            _npc.Draw(_spriteBatch);
-            _enemy.Draw(_spriteBatch);
+
+            // Draw NPCs
+            foreach (var npc in _npcs)
+            {
+                npc.Draw(_spriteBatch);
+            }
+
+            // Draw Enemies
+            foreach (var enemy in _enemies)
+            {
+                enemy.Draw(_spriteBatch);
+            }
 
             // Draw the triangles
             DrawingHelper.DrawFilledTriangle(_spriteBatch, _triangle1, Color.White);
