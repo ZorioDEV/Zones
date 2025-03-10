@@ -33,12 +33,6 @@ namespace ProjectZones.Core
 
         private Random _random = new Random();
 
-        // TUTORIAL 
-        private Texture2D tilemapAsset;
-        private Sprite sprite;
-        private ScaledSprite scaledSprite;
-        private ColoredSprite coloredSprite;
-
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -87,12 +81,6 @@ namespace ProjectZones.Core
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             DrawingHelper.Initialize(GraphicsDevice);
-
-            // TUTORIAL 
-            tilemapAsset = Content.Load<Texture2D>("tilemap_packed");
-            sprite = new Sprite(tilemapAsset, Vector2.Zero);
-            scaledSprite = new ScaledSprite(tilemapAsset, Vector2.Zero);
-            coloredSprite = new ColoredSprite(tilemapAsset, Vector2.Zero, Color.Red);
         }
 
         protected override void Update(GameTime gameTime)
@@ -157,29 +145,6 @@ namespace ProjectZones.Core
             // Set the viewport and scaling
             GraphicsDevice.Viewport = _viewportHelper.Viewport;
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _viewportHelper.ScaleMatrix);
-
-            // TUTORIAL 
-            _spriteBatch.Draw(
-                tilemapAsset,
-                //new Vector2(500, 500),
-                new Rectangle(500, 500, 864, 576),
-                Color.White
-            );
-            //_spriteBatch.Draw(
-            //    sprite.texture,
-            //    sprite.position,
-            //    Color.White
-            //);
-            //_spriteBatch.Draw(
-            //    scaledSprite.texture,
-            //    scaledSprite.Rect,
-            //    Color.White
-            //);
-            _spriteBatch.Draw(
-                coloredSprite.texture,
-                coloredSprite.Rect,
-                coloredSprite.color
-            );
 
             // Draw colliders
             _colliderManager.Draw(_spriteBatch);

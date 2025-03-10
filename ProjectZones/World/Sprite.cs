@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ProjectZones.World
 {
-    // TUTORIAL
     internal class Sprite
     {
         public Texture2D texture;
