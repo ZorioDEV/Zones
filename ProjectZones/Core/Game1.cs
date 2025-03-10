@@ -181,8 +181,8 @@ namespace ProjectZones.Core
                 coloredSprite.color
             );
 
-            // Draw entities
-            _player.Draw(_spriteBatch);
+            // Draw colliders
+            _colliderManager.Draw(_spriteBatch);
 
             // Draw NPCs
             foreach (var npc in _npcs)
@@ -203,8 +203,8 @@ namespace ProjectZones.Core
             // Draw the quadrilateral collider outline
             DrawingHelper.DrawQuadrilateralOutline(_spriteBatch, _quadrilateralCollider, Color.Green);
 
-            // Draw colliders
-            _colliderManager.Draw(_spriteBatch);
+            // Draw entities
+            _player.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
