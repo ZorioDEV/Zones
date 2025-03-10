@@ -15,6 +15,7 @@ namespace ProjectZones.Core
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private ViewportHelper _viewportHelper;
 
         private Player _player;
         private NPC _npc;
@@ -23,20 +24,27 @@ namespace ProjectZones.Core
         private Triangle _triangle1;
         private Triangle _triangle2;
 
+        private KeyboardState _previousKeyboardState;
+        private KeyboardState currentKeyboardState;
+
+        // TUTORIAL 
+        private Texture2D tilemapAsset;
+        private Sprite sprite;
+        private ScaledSprite scaledSprite;
+        private ColoredSprite coloredSprite;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            // Set fullscreen
-            _graphics.IsFullScreen = true;
+            // Ensure the window is not borderless
+            Window.IsBorderless = false;
 
-            // Set the preferred backbuffer width and height to the screen's resolution
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-
-            // Apply changes
+            // Set initial windowed mode
+            _graphics.PreferredBackBufferWidth = 1280; // Example: 1280x720
+            _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
         }
 
@@ -58,6 +66,9 @@ namespace ProjectZones.Core
             _triangle1 = new Triangle(new Vector2(200, 300), new Vector2(300, 300), new Vector2(200, 200));
             _triangle2 = new Triangle(new Vector2(300, 100), new Vector2(300, 200), new Vector2(200, 100));
 
+            // Initialize the viewport helper
+            _viewportHelper = new ViewportHelper(_graphics);
+
             base.Initialize();
         }
 
@@ -65,19 +76,32 @@ namespace ProjectZones.Core
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             DrawingHelper.Initialize(GraphicsDevice);
+
+            // TUTORIAL 
+            tilemapAsset = Content.Load<Texture2D>("tilemap_packed");
+            sprite = new Sprite(tilemapAsset, Vector2.Zero);
+            scaledSprite = new ScaledSprite(tilemapAsset, Vector2.Zero);
+            coloredSprite = new ColoredSprite(tilemapAsset, Vector2.Zero, Color.Red);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Get the current keyboard state
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+
+            if (currentKeyboardState.IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Toggle fullscreen on F11 key press
-            if (Keyboard.GetState().IsKeyDown(Keys.F11))
+            // Toggle fullscreen on F11 key press (only once per press)
+            if (currentKeyboardState.IsKeyDown(Keys.F11) && _previousKeyboardState.IsKeyUp(Keys.F11))
             {
                 _graphics.ToggleFullScreen();
                 _graphics.ApplyChanges();
+                _viewportHelper.Update(_graphics.GraphicsDevice, _graphics.IsFullScreen); // Update viewport helper
             }
+
+            // Update the previous keyboard state
+            _previousKeyboardState = currentKeyboardState;
 
             InputManager.Update(gameTime);
 
@@ -93,7 +117,32 @@ namespace ProjectZones.Core
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.Identity);
+            // Set the viewport and scaling
+            GraphicsDevice.Viewport = _viewportHelper.Viewport;
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _viewportHelper.ScaleMatrix);
+
+            // TUTORIAL 
+            _spriteBatch.Draw(
+                tilemapAsset,
+                //new Vector2(500, 500),
+                new Rectangle(500, 500, 864, 576),
+                Color.White
+            );
+            //_spriteBatch.Draw(
+            //    sprite.texture,
+            //    sprite.position,
+            //    Color.White
+            //);
+            //_spriteBatch.Draw(
+            //    scaledSprite.texture,
+            //    scaledSprite.Rect,
+            //    Color.White
+            //);
+            _spriteBatch.Draw(
+                coloredSprite.texture,
+                coloredSprite.Rect,
+                coloredSprite.color
+            );
 
             // Draw entities
             _player.Draw(_spriteBatch);
